@@ -1,0 +1,423 @@
+---
+title: "Tuto Restart"
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+css: "www/style_tuto_learnr.css"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+
+Sys.setlocale("LC_ALL", "fr_FR.UTF-8")
+gradethis_setup()
+ 
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+
+
+
+## 1. Introduction 
+
+![](www/grimoire.png){width=70px}<a href="http://perso.ens-lyon.fr/lise.vaudor/Supports_formation/initR_0_introduction.html#(1)" target="_blank">Cliquer ici pour les diapos de cours</a>
+
+### 1.1 Quelques mots sur ce tuto
+
+Ce document rassemble un certain nombre d'exercices, qui sont de **deux types**.
+
+- Des exercices de type **QCM**.
+- Des exercices de type **code**.
+
+Dans ce deuxième type d'exercice, vous pourrez **modifier du code** dans une fenêtre (fond jaune pâle) qui est l'équivalent d'un **éditeur** (très simplifié) de code R. Pour **exécuter** les lignes de code, vous pouvez vous placer dessus et faire **Ctrl+Enter**. Le résultat s'affichera dans une fenêtre (fond rose pâle) en-dessous qui est l'équivalent d'une **console** R.
+
+```{r decouvre_exos, exercise=TRUE}
+a=33
+b=29
+a=___
+a
+```
+
+```{r decouvre_exos-solution}
+a=33
+b=29
+a=22
+a
+```
+
+```{r decouvre_exos-check}
+grade_result(pass_if(~identical(a,22),
+                     "Très bien! Le résultat du code correspond bien à la valeur 22"),
+             fail_if(~!identical(a,22),
+                     "Ah non! le résultat du code ne correspond pas à la valeur attendue..."))
+```
+
+
+Le code que vous entrerez peut être évalué automatiquement lorsque vous appuyez sur **Submit solution**. 
+
+L'évaluation porte usuellement sur la dernière commande écrite dans l'éditeur (celle écrite tout en bas!), ainsi que (plus généralement) sur le fait que le code ne génère pas d'erreur lors de son exécution.
+
+Par exemple, l'exercice ci-dessus est paramétré pour être évalué comme correct quand la dernière commande (donc d'après le code pré-renseigné l'objet `a`) correspond à la valeur 22, et incorrect autrement... Vous pouvez corriger (ou non) le code dans l'éditeur pour tester le comportement de l'évaluation...
+
+
+### 1.2 Usages de R
+
+```{r usages_R}
+question("Que pouvez-vous faire avec R?",
+    answer("Des modèles", correct=TRUE),
+    answer("Des simulations", correct=TRUE),
+    answer("Des statistiques", correct=TRUE),
+    answer("Du café"),
+    answer("Des graphiques", correct=TRUE),
+    answer("Des rapports", correct = TRUE),
+    answer("Des pains au chocolat"),
+    answer("Des diaporamas", correct=TRUE),
+    incorrect="Seules deux de ces propositions ne sont pas correctes",
+    correct="Oui! C'est dommage pour le café mais il faut bien une motivation pour se lever de son fauteuil de temps en temps...",
+    allow_retry=TRUE
+)
+```
+
+### 1.3 Usages de RStudio
+
+```{r usages_RStudio}
+question("Quelles propositions sont vraies?",
+    answer("RStudio remplace R",),
+    answer("RStudio complète R", correct=TRUE),
+    answer("RStudio est un outil essentiel pour travailler avec R", correct=TRUE),
+    answer("RStudio est un gadget qui rend l'usage de R plus amusant"),
+    answer("RStudio est gratuit", correct=TRUE),
+    answer("RStudio est payant"),
+    incorrect="Nope! Qu'avez-vous installé pour ce cours? RStudio seul ou RStudio ET R? Avez-vous eu à payer une licence?",
+    correct="Oui! RStudio complète R en rendant son usage beaucoup plus simple et convivial, et il est gratuit... C'est l'IDE de référence pour l'usage de R.",
+    allow_retry=TRUE
+)
+```
+
+### 1.4 Assignation
+
+Testez les commandes suivantes. 
+
+Modifiez le code **pour que `obj_d` fasse également partie de l'environnement** et soit listé lors de l'appel de `ls()`.
+
+
+```{r assignation, exercise=TRUE, exercise.lines=8}
+obj_a <- "coin-coin"
+obj_b <- "pouet-pouet"
+obj_c = 25.7
+#obj_d <- 33
+ls()
+```
+
+```{r assignation-solution}
+obj_a <- "coin-coin"
+obj_b <- "pouet-pouet"
+obj_c = 25.7
+obj_d <- 33
+ls()
+```
+
+```{r assignation-check}
+grade_result(
+  fail_if(~isFALSE("obj_d" %in% .result), "Non, l'objet obj_d ne fait toujours pas partie de l'environnement"),
+  pass_if(~isTRUE("obj_d" %in% .result),
+          "Eh oui! Avant que vous dé-commentiez la ligne, le vecteur `obj_d` n'était pas créé."),
+  fail_if(~ TRUE, "ça fonctionne pas")
+)
+```
+
+
+## 2. Objets de base 
+
+![](www/grimoire.png){width=70px}<a href="http://perso.ens-lyon.fr/lise.vaudor/Supports_formation/initR_1_objets_de_base.html#(1)" target="_blank">Cliquer ici pour les diapos de cours</a>
+
+### 2.1 Création de vecteurs
+
+Le code suivant crée quatre vecteurs. **Examinez-le** et répondez à la question suivante
+
+```{r cree_vecteurs, exercise=TRUE, exercise.lines=6}
+vec1 <- 0:5
+vec2 <- seq(0,5,length.out=5)
+vec3 <- c("0","1","2","3","4","5")
+vec4 <- seq(0,5,by=1)
+```
+
+```{r question_vecteurs}
+question("Quelle est la proposition correcte?",
+    answer("Tous les vecteurs ont un contenu identique"),
+    answer("vec1 et vec4 ont un contenu identique", correct=TRUE),
+    answer("vec1, vec3 et vec4 ont un contenu identique"),
+    answer("vec1, vec2 et vec4 ont un contenu identique"),
+    incorrect="Examinez bien les objets... Leur longueur... la présence de guillemets...",
+    correct="Oui, bravo! Avez-vous remarqué comme avec R il faut faire attention aux subtilités comme l'usage de guillemets?...",
+    allow_retry=TRUE
+)
+```
+
+
+### 2.2 Création d'une tibble
+
+Complétez le code ci-dessous pour créer la tibble `starks` qui résume quelques données sur des personnages de la série Game of Thrones.
+
+Précisez le nom de famille de Jon (à savoir "Snow") et en complétez la variable "Age" (numérique) correspondant aux âges des enfants Stark (respectivement 15, 14, 11, 9, 7 et 3 ans).
+
+```{r,cree_tibble-setup}
+library(dplyr)
+```
+
+```{r cree_tibble, exercise=TRUE, exercise.lines=6}
+starks <- tibble(FirstName=c("Robb","Jon","Sansa","Arya","Brandon","Rickon"),
+                 LastName=c("Stark",_,"Stark","Stark","Stark","Stark"),
+                 Age=c(_,_,_,_,_,_),
+                 Direwolf=c("Grey Wind","Ghost","Lady","Nymeria","Summer","Shaggydog"))     
+```
+
+```{r cree_tibble-solution}
+starks <- tibble(FirstName=c("Robb","Jon","Sansa","Arya","Brandon","Rickon"),
+                 LastName=c("Stark","Snow","Stark","Stark","Stark","Stark"),
+                 Age=c(15,14,11,9,7,3),
+                 Direwolf=c("Grey Wind","Ghost","Lady","Nymeria","Summer","Shaggydog"))
+```
+
+
+```{r cree_tibble-check}
+grade_this({
+  lobjs <- ls(envir = .envir_result)
+  if (!exists("starks", envir = .envir_result) ) {
+    fail("La table `starks` n'existe pas.")
+  }
+  if (!identical(.result,.solution)) {
+    fail("Ce résultat n'est pas ce que j'attendais. Vérifiez les valeurs...")
+  }
+  if (identical(.result,.solution)) {
+    pass("Bravo ! Vous avez bien créé la table `starks`, avec les valeurs attendues")
+  }
+})
+```
+
+### 2.3 Indexation des vecteurs
+
+```{r index_vec-setup}
+set.seed(33)
+vec <- c("Marseille","Lyon","Toulouse","Paris","Bordeaux")
+vecvilles <- sample(vec,1000,replace=T)
+```
+
+```{r index_vec, exercise=TRUE, exercise.lines=3}
+vecvilles___
+```
+
+```{r question_index_vec}
+question("Quel est le 567ème élément de vecvilles?",
+         answer("Marseille"),
+         answer("Lyon"),
+         answer("Paris", correct=TRUE),
+         answer("Bordeaux"),
+         incorrect="Non! Utilisez le système d'indexation: vecvilles[567] vous renvoie le 567ème élément du vecteur.",
+         correct="Oui! vecvilles[567] vous renvoie le 567ème élément du vecteur, qui ici se trouve être 'Paris'.")
+```
+
+### 2.4 Indexation d'une liste
+
+L'environnement contient une liste `ma_liste`. En utilisant le système d'indexation des objets de type liste, récupérez le 4ème élément de l'élément fruits dans l'objet ma_liste.
+
+```{r, index_list-setup}
+ma_liste=list(fruits=c("bananes","pommes","cerises","poires","abricots"),
+              legumes=c("chou-fleur","poivron","carotte","poireau","brocoli","haricot","fenouil"),
+              feculents=c("riz","pâtes","pommes de terre","semoule"))
+```
+
+```{r index_list, exercise=TRUE, exercise.lines=4}
+quatrieme_fruit <- ___
+quatrieme_fruit
+```
+
+```{r index_list-solution}
+quatrieme_fruit <- ma_liste$fruits[4]
+quatrieme_fruit
+```
+
+```{r index_list-check}
+grade_code("Bravo! Retenez l'usage des `$` pour récupérer les éléments nommés et des crochets `[...]` pour récupérer les éléments non-nommés!")
+```
+
+
+
+### 2.5 Indexation d'une tibble
+
+L'environnement contient une tibble `ma_tibble`. En utilisant le système d'indexation des objets de type tibble, récupérez les sixième et septième éléments de la variable `cri` dans cette tibble.
+
+```{r index_tib-setup}
+library(dplyr)
+
+ma_tibble=tibble(animal=c("chat","chien","âne","cheval","coq","cochon","vache"),
+                 cri=c("miaou!","ouaf-ouaf!","hi-han!","hiihiiiihiiiii!","cocoricoo!","grouik!","meuh!"))
+```
+
+```{r index_tib, exercise=TRUE, exercise.lines=4}
+sixieme_et_septieme_cris <-___
+sixieme_et_septieme_cris
+```
+
+```{r index_tib-solution}
+sixieme_et_septieme_cris <- ma_tibble$cri[6:7]
+sixieme_et_septieme_cris
+```
+
+```{r index_tib-check}
+grade_code("Bravo! Retenez l'usage des `$` pour récupérer les éléments nommés et des crochets `[...]` pour récupérer les éléments non-nommés!")
+```
+
+
+## 3. Opérateurs, fonctions et packages
+
+![](www/grimoire.png){width=70px}<a href="http://perso.ens-lyon.fr/lise.vaudor/Supports_formation/initR_2_operateurs_et_fonctions.html#(1)" target="_blank">Cliquer ici pour les diapos de cours</a>
+
+
+### 3.1 Opérateurs arithmétiques
+
+Le script ci-dessous crée deux vecteurs, `pommes` et `bananes`. 
+
+Complétez le script pour **créer un nouveau vecteur** `fruits` qui correspond à la **somme** (élément par élément) des pommes et des bananes.
+
+<small>Ne réécrivez pas le vecteur fruits à la main! Il faut simplement ici réaliser une opération arithmétique simple à l'aide des vecteurs `pommes` et `bananes`...</small>
+
+```{r ope_arith, exercise=TRUE, exercise.lines=5}
+bananes <- c(5, 2, 3, 1, 7 , 8,NA, 2)
+pommes <-  c(2, 1, 0, 2, NA, 3, 1, 5)
+fruits <- _______________
+```
+
+```{r ope_arith-solution}
+bananes <- c(5, 2, 3, 1, 7 , 8,NA, 2)
+pommes <-  c(2, 1, 0, 2, NA, 3, 1, 5)
+fruits <- pommes + bananes
+```
+
+```{r ope_arith-check}
+grade_this({
+  lobjs <- ls(envir = .envir_result)
+  if (!exists("fruits", envir = .envir_result) ) {
+    fail("Le vecteur `fruits` n'existe pas.")
+  }
+  if (!identical(.result,.solution)) {
+    fail("Ce résultat n'est pas ce que j'attendais. Vous n'avez pas à effectuer le calcul vous même, juste à utiliser `+`...")
+  }
+  if (identical(.result,.solution)) {
+    pass("Bravo ! Vous avez bien créé le vecteur `fruits` en sommant `pommes` et `bananes`. Avez-vous remarqué comme NA+quelque chose donne NA?...")
+  }
+})
+```
+
+
+### 3.2 Opérateurs logiques
+
+```{r ope_logiques}
+question("Sachant que x==33,laquelle de ces propositions renvoie FALSE?",
+         answer("x>10 | x>50"),
+         answer("x>=30 & x<=1000"),
+         answer("x>30 & x<10", correct=TRUE),
+         answer("x %in% c(11,22,33,44,55)"),
+         answer("x<40"),
+         incorrect="Eh non! En fait, on ne peut pas avoir à la fois x>30 et x<10 donc quelle que soit la valeur de x, cette proposition est forcément fausse! Toutes les autres propositions sont vraies...",
+         correct="En effet...")
+```
+
+Gardez à l'esprit que (prop1 & prop2) est vraie si les **deux** propositions sont vraies; en revanche (prop1 | prop2) est vraie si **au moins l'une des deux** propositions est vraie...
+
+### 3.3 Usage d'une fonction
+
+L'environnement contient un vecteur `x`. Calculez la **moyenne**, la **variance**, et le **quantile d'ordre 90%** du vecteur `x`. 
+
+<small>Pensez au préalable à convertir la valeur 90% en une valeur comprise entre 0 et 1...</small>
+
+```{r use_f-setup}
+set.seed(33)
+x=rnorm(1000,3,2)
+```
+
+```{r use_f, exercise=TRUE, exercise.lines=6}
+moyenne <- ___
+moyenne
+variance <- ___
+variance
+quantile90p <- ___
+quantile90p
+```
+
+```{r use_f-solution}
+moyenne <- mean(x)
+moyenne
+variance <- var(x)
+variance
+quantile90p <- quantile(x,0.9)
+quantile90p
+```
+
+```{r use_f-check}
+grade_this({
+  lobjs <- ls(envir = .envir_result)
+  set.seed(33) 
+  x=rnorm(1000,3,2)
+  moyenne <- mean(x)
+  variance <- var(x)
+  quantile90p <- quantile(x,0.9)
+  objs=ls(envir=.envir_result)
+  if (!all(c("moyenne","variance","quantile90p") %in% objs)) {
+    fail("Certains des objets attendus (`moyenne`, `variance`, `quantile90p`) n'existent pas.")
+  }
+  if(!identical(moyenne, .envir_result[["moyenne"]])){
+    fail("La moyenne n'a pas la valeur attendue.")
+  }
+  if(!identical(variance, .envir_result[["variance"]])){
+    fail("La variance n'a pas la valeur attendue.")
+    }
+  if(!identical(quantile90p, .envir_result[["quantile90p"]])){
+    fail("Le quantile d'ordre 90% n'a pas la valeur attendue.")
+  }
+  pass("C'est tout bon!")
+})
+```
+
+
+### 3.4 Arguments d'une fonction
+
+La fonction `mean()` renvoie la moyenne d'un vecteur. L'existence d'un élément manquant (NA) dans le vecteur cause le renvoi de NA comme résultat.
+
+Un des **arguments** de `mean()` permet de changer ce comportement pour renvoyer la moyenne du vecteur en **omettant les NA**.
+
+Trouvez le nom de cet argument en consultant l'**aide de la fonction** et complétez la deuxième commande (ci-dessous) pour calculer `m2`.
+
+Remarque: vous pouvez consulter le fichier d'aide associé à la fonction depuis la console, comme vous le feriez depuis RStudio...
+
+```{r arg_fonction, exercise=TRUE, exercise.lines=6}
+vec <- c(3,2,8,NA,6,8,10,4,12,21,NA)
+
+m1 <- mean(vec)
+m2 <- mean(vec, _____)
+```
+
+```{r arg_fonction-solution}
+vec <- c(3,2,8,NA,6,8,10,4,12,21,NA)
+
+m1 <- mean(vec)
+m2 <- mean(vec, na.rm=TRUE)
+```
+
+Avez-vous consulté l'aide de la fonction mean() (en tapant par exemple help(mean) ou ?mean) pour trouver le nom de l'argument qui nous intéresse ici?
+
+```{r arg_fonction-check}
+grade_this({
+    if(!stringr::str_detect(.user_code,"na.rm")){
+      fail("Vous n'avez pas utilisé le nom de l'argument dont on a besoin ici.")}
+    if(!identical(.result,.solution)){
+      fail("Non... La valeur obtenue n'est pas celle attendue.")
+    }
+    pass("Très bien! Si l'on est assez facilement au clair sur ce que fait la fonction 'mean()', il y aura sans doute, à l'avenir, de nombreuses fonctions pour lesquelles vous aurez grand besoin de consulter l'aide!")
+})
+```
+
