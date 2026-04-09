@@ -42,4 +42,4 @@ jobs:
           push: true
           tags: | 
             ghcr.io/lvaudor/learnr_restart_exos_base:latest
-            ghcr.io/glourb/learnr_restart_exos_base:${{ env.COMMIT_SHORT_SHA }}
+            ghcr.io/lvaudor/learnr_restart_exos_base:${{ env.COMMIT_SHORT_SHA }}
