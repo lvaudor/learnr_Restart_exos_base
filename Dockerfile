@@ -9,6 +9,8 @@ RUN locale-gen fr_FR.UTF-8
 RUN Rscript -e 'install.packages("shiny")'
 RUN Rscript -e 'install.packages("learnr")'
 RUN Rscript -e 'install.packages("remotes")'
+RUN Rscript -e 'install.packages("tibble")'
+RUN Rscript -e 'install.packages("dplyr")'
 RUN Rscript -e 'remotes::install_github("rstudio/gradethis")'
 
 
